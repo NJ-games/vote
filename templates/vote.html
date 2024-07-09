@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vote</title>
+    <style>
+        a {
+            background-color: #04AA6D;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 10px;
+            }
+        a:hover{
+            background-color: #81fccf;
+            color: #013319;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 10px;
+
+        }
+        
+
+
+        .candidate-button {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            text-align: center;
+            background-color: #f9f9f9;
+        }
+        .voted {
+        background-color: #50e973;
+        border-color: #14381c;
+        }
+        .candidate-info {
+            display: flex;
+            align-items: center;
+            margin-left: 5%;
+        }
+        .candidate-info img {
+            width: 100px;
+            height: 100px;
+            border-radius: 10%;
+        }
+        .candidate-info .icon {
+            margin-left: 10px;
+        }
+        
+        .candidate-info h1 {
+            margin-left: 100px;
+            margin-right: 100px;
+            font-size: 50px;
+        }
+        .candidate-button button {
+            display: none;
+            visibility: hidden;
+            width: 100px;
+        }
+        .candidate-button button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <audio src="{{ url_for('static', filename='next.mp3')  }}" autoplay></audio>
+    <div id="candidates">
+        {% for name, details in candidates.items() %}
+            <div class="candidate-button" data-button="{{ name }}" data-key="{{ loop.index }}">
+                <div class="candidate-info">
+                    <div class="sl-no"><h1>{{ loop.index }}.</h1></div>
+                    
+                    <img src="{{ url_for('static', filename='uploads/' + details['icon'].split('/')[-1]) }}" alt="{{ name }} Icon" class="icon">
+                    <h1>{{ name }}</h1>
+                    <div class="icon">
+                        <img src="{{ url_for('static', filename='uploads/' + details['photo'].split('/')[-1]) }}" alt="{{ name }} Photo">
+                    </div>
+                    
+                </div>
+                
+            </div>
+        {% endfor %}
+    </div>
+    <script>
+        // const elements = document.querySelectorAll('.candidate-button');
+        // let found = false;
+        // if(elements){
+        // console.log(elements)}
+        // elements.forEach(element => {
+        //     if (element.classList.contains('class2')) {
+        //         found = true;
+        //     }
+        // });
+        // if(found){
+        //     console.log('found');
+        //     wait(1000);
+            
+        // }
+
+
+
+        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('keydown', function(event) {
+            const keyPressed = event.key;
+            const candidateButton = document.querySelector(`.candidate-button[data-key="${keyPressed}"]`);
+            
+            
+            if (candidateButton) {
+                
+                const button = candidateButton.getAttribute('data-button');
+                vote(button,candidateButton);
+            }
+        });
+    });
+
+
+
+        function wait(ms) {
+            const start = Date.now();
+            let now = start;
+            while (now - start < ms) {
+                now = Date.now();
+            }
+            }
+        function vote(button, candidateButton) {
+            fetch('/vote', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            body: JSON.stringify({ button: button}),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                candidateButton.classList.add('voted');
+                window.location.replace("/wait");
+                
+            } else {
+                alert('Error: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+    </script>
+    <br>
+    <br>
+    <br>
+    <a href="{{ url_for('total_votes') }}">See total Votes</a><br>
+    <a href="{{ url_for('results') }}">End voting</a>
+</body>
+</html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Candidate</title>
+</head>
+<body>
+    <h1>Edit Candidate</h1>
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
+    <form method="post" enctype="multipart/form-data">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" value="{{ candidate.name }}" required>
+        <br>
+        <label for="photo">Photo:</label>
+        <input type="file" id="photo" name="photo" accept="image/*">
+        <br>
+        <label for="icon">Icon:</label>
+        <input type="file" id="icon" name="icon" accept="image/*">
+        <br>
+        <button type="submit">Save Changes</button>
+    </form>
+    <a href="{{ url_for('manage_candidates') }}">Back to Manage Candidates</a>
+</body>
+</html>

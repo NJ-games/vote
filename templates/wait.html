@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        h1{
+            font-size: 500%;
+        }
+        h2{
+            font-size: 500%;
+        }
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Please Wait</title>
+    <script>
+        setTimeout(function() {
+            window.location.href = "{{ url_for('vote_page') }}";
+        }, 5000);
+    </script>
+</head>
+<body align="center">
+    <audio src="{{ url_for('static', filename='voted.mp3')  }}" autoplay></audio>
+    <h1>Vote recorded for</h1>
+    <h2>{{name}}</h2>
+</body>
+</html>
